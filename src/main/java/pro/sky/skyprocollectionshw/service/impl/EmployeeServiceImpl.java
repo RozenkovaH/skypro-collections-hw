@@ -2,58 +2,45 @@ package pro.sky.skyprocollectionshw.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import pro.sky.skyprocollectionshw.data.Employee;
 import pro.sky.skyprocollectionshw.exception.EmployeeAlreadyExistsException;
 import pro.sky.skyprocollectionshw.exception.EmployeeNotFoundException;
-import pro.sky.skyprocollectionshw.exception.NoFreeSlotsInArrayException;
 import pro.sky.skyprocollectionshw.service.EmployeeService;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    Employee[] employees = new Employee[3];
+    List<Employee> employees = new LinkedList<>();
 
     @Override
-    public String collectAllEmployeesAsString() {
-        StringBuilder employeesList = new StringBuilder();
-
-        for (Employee employee : employees) {
-            if (employee != null) {
-                employeesList.append(employee).append("<br>");
-            }
-        }
-        return employeesList.toString().isEmpty() ? "There are no employees in the array." : employeesList.toString();
+    public List<Employee> getAllEmployees() {
+        return employees;
     }
 
     @Override
     public String addEmployee(String firstName, String lastName) throws EmployeeAlreadyExistsException {
-        doesEmployeeExist(firstName, lastName);
-        employees[findFirstFreeIndex()] = new Employee(firstName, lastName);
+        Employee newEmployee = new Employee(firstName, lastName);
+        doesEmployeeExist(newEmployee);
+        employees.add(newEmployee);
         return "Employee <b>" + firstName + " " + lastName + "</b> has been successfully added.";
     }
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
-        return employees[getEmployeeIndexOrError(firstName, lastName)];
+        return employees.get(getEmployeeIndexOrError(firstName, lastName));
     }
 
     @Override
     public String removeEmployee(String firstName, String lastName) {
-        employees[getEmployeeIndexOrError(firstName, lastName)] = null;
+        employees.remove(getEmployeeIndexOrError(firstName, lastName));
         return "Employee <b>" + firstName + " " + lastName + "</b> has been successfully fired.";
     }
 
-    private int findFirstFreeIndex() throws NoFreeSlotsInArrayException {
-        for (int index = 0; index < employees.length; index++) {
-            if (employees[index] == null) {
-                return index;
-            }
-        }
-        throw new NoFreeSlotsInArrayException();
-    }
-
-    private void doesEmployeeExist(String firstName, String lastName) {
-        if (getEmployeeIndex(firstName, lastName) >= 0) {
+    private void doesEmployeeExist(Employee employee) {
+        if (employees.contains(employee)) {
             throw new EmployeeAlreadyExistsException();
         }
     }
@@ -68,10 +55,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private int getEmployeeIndex(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
-        for (int index = 0; index < employees.length; index++) {
-            if (employee.equals(employees[index])) {
-                return index;
-            }
+        if (employees.contains(employee)) {
+            return employees.indexOf(employee);
         }
         return -1;
     }

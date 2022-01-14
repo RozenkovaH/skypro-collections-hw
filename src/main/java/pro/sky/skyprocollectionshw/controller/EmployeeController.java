@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import pro.sky.skyprocollectionshw.data.Employee;
 import pro.sky.skyprocollectionshw.service.EmployeeService;
 
@@ -19,8 +21,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/all")
-    public String getAllEmployeees() {
-        return employeeService.collectAllEmployeesAsString();
+    public List<Employee> getAllEmployeeesAsJson() {
+        return employeeService.getAllEmployees();
     }
 
     @GetMapping("/add")
