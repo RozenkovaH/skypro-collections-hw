@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class EmployeeNotFoundException extends RuntimeException {
 
     public EmployeeNotFoundException() {
-        super("No such employee in the array.");
+        super("No such employee in the list.");
     }
 
     public EmployeeNotFoundException(String message) {
