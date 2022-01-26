@@ -2,7 +2,7 @@ package pro.sky.skyprocollectionshw.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import pro.sky.skyprocollectionshw.data.Employee;
@@ -13,11 +13,11 @@ import pro.sky.skyprocollectionshw.service.EmployeeService;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    List<Employee> employees = new LinkedList<>();
+    private final List<Employee> employees = new ArrayList<>();
 
     @Override
     public List<Employee> getAllEmployees() {
-        return employees;
+        return new ArrayList<>(employees);
     }
 
     @Override
@@ -55,9 +55,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private int getEmployeeIndex(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
-        if (employees.contains(employee)) {
-            return employees.indexOf(employee);
-        }
-        return -1;
+        return employees.indexOf(employee);
     }
 }

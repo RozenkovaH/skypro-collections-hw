@@ -21,7 +21,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/all")
-    public List<Employee> getAllEmployeeesAsJson() {
+    public List<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
