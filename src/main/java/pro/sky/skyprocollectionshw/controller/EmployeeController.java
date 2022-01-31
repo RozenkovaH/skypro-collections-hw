@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
+import java.util.Collection;
 
 import pro.sky.skyprocollectionshw.data.Employee;
 import pro.sky.skyprocollectionshw.service.EmployeeService;
@@ -21,7 +21,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/all")
-    public HashMap<String, Employee> getAllEmployees() {
+    public Collection<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
