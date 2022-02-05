@@ -9,6 +9,11 @@ public class Employee {
     private int department;
     private int salary;
 
+    public Employee(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public Employee(String firstName, String lastName, int department, int salary) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -50,8 +55,8 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return department == employee.department && salary == employee.salary && firstName.equals(employee.firstName) && lastName.equals(
-                employee.lastName);
+        return department == employee.department && salary == employee.salary && Objects.equals(firstName,
+                employee.firstName) && Objects.equals(lastName, employee.lastName);
     }
 
     @Override

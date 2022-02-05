@@ -18,6 +18,9 @@ public class EmployeeFormatterServiceImpl implements EmployeeFormatterService {
     }
 
     private String toLowerAndCapitalize(String str) {
+        if (str == null) {
+            return null;
+        }
         return StringUtils.capitalize(str.toLowerCase());
     }
 }
