@@ -1,6 +1,7 @@
 package pro.sky.skyprocollectionshw.data;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class Employee {
 
