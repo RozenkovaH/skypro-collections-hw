@@ -12,17 +12,17 @@ import pro.sky.skyprocollectionshw.exception.EmployeeAlreadyExistsException;
 import pro.sky.skyprocollectionshw.exception.EmployeeNotFoundException;
 import pro.sky.skyprocollectionshw.service.EmployeeFormatterService;
 import pro.sky.skyprocollectionshw.service.EmployeeService;
-import pro.sky.skyprocollectionshw.service.EmployeeValidationService;
+import pro.sky.skyprocollectionshw.service.ValidationService;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final EmployeeValidationService employeeValidationService;
+    private final ValidationService validationService;
     private final EmployeeFormatterService employeeFormatterService;
 
-    public EmployeeServiceImpl(EmployeeValidationService employeeValidationService,
+    public EmployeeServiceImpl(ValidationService validationService,
                                EmployeeFormatterService employeeFormatterService) {
-        this.employeeValidationService = employeeValidationService;
+        this.validationService = validationService;
         this.employeeFormatterService = employeeFormatterService;
     }
 
@@ -30,36 +30,35 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final Map<String, Employee> employees = new HashMap<>();
 
     public List<Employee> getAllEmployees() {
-        return new ArrayList<>(employees.values());
+        return new ArrayList<>(getEmployees().values());
     }
 
     @Override
-    public String addEmployee(String firstName, String lastName, int department, int salary) {
-        Employee newEmployee = new Employee(firstName, lastName, department, salary);
-        employeeValidationService.validate(newEmployee);
-        newEmployee = employeeFormatterService.format(newEmployee);
-        doesEmployeeExist(newEmployee);
-        employees.put(employeeToKey(newEmployee), newEmployee);
-        return "Employee <b>" + newEmployee.getFirstName() + " " + newEmployee.getLastName() + "</b> has been successfully added.";
+    public String addEmployee(Employee employee) {
+        validationService.validateEmployee(employee);
+        employee = employeeFormatterService.format(employee);
+        doesEmployeeExist(employee);
+        employees.put(employeeToKey(employee), employee);
+        return "Employee <b>" + employee.getFirstName() + " " + employee.getLastName() + "</b> has been successfully added.";
     }
 
     @Override
-    public Employee findEmployee(String firstName, String lastName) {
-        return employees.get(getEmployeeKeyOrError(firstName, lastName));
+    public Employee findEmployee(Employee employee) {
+        return employees.get(getEmployeeKeyOrError(employeeFormatterService.format(employee)));
     }
 
     @Override
-    public String removeEmployee(String firstName, String lastName) {
-        employees.remove(getEmployeeKeyOrError(firstName, lastName));
-        return "Employee <b>" + firstName + " " + lastName + "</b> has been successfully fired.";
+    public String removeEmployee(Employee employee) {
+        employees.remove(getEmployeeKeyOrError(employeeFormatterService.format(employee)));
+        return "Employee <b>" + employee.getFirstName() + " " + employee.getLastName() + "</b> has been successfully fired.";
+    }
+
+    protected Map<String, Employee> getEmployees() {
+        return employees;
     }
 
     private String employeeToKey(Employee employee) {
-        return employeeToKey(employee.getFirstName(), employee.getLastName());
-    }
-
-    private String employeeToKey(String firstName, String lastName) {
-        return String.format(KEY_TEMPLATE, firstName, lastName);
+        return String.format(KEY_TEMPLATE, employee.getFirstName(), employee.getLastName());
     }
 
     private void doesEmployeeExist(Employee employee) {
@@ -68,8 +67,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    private String getEmployeeKeyOrError(String firstName, String lastName) {
-        String key = employeeToKey(firstName, lastName);
+    private String getEmployeeKeyOrError(Employee employee) {
+        String key = employeeToKey(employee);
         if (employees.containsKey(key)) {
             return key;
         }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class BadArgumentException extends RuntimeException {
 
     public BadArgumentException() {
-        super("String is empty or contains non-alpha characters.");
+        super("Argument does not match requirements.");
     }
 
     public BadArgumentException(String message) {
