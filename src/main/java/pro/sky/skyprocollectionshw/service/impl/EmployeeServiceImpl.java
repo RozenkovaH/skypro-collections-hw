@@ -15,17 +15,16 @@ import pro.sky.skyprocollectionshw.service.EmployeeService;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final String keyTemplate = "%s|%s";
+    private final static String KEY_TEMPLATE = "%s|%s";
     private final Map<String, Employee> employees = new HashMap<>();
 
-    @Override
     public List<Employee> getAllEmployees() {
         return new ArrayList<>(employees.values());
     }
 
     @Override
-    public String addEmployee(String firstName, String lastName) {
-        Employee newEmployee = new Employee(firstName, lastName);
+    public String addEmployee(String firstName, String lastName, int department, int salary) {
+        Employee newEmployee = new Employee(firstName, lastName, department, salary);
         doesEmployeeExist(newEmployee);
         employees.put(employeeToKey(newEmployee), newEmployee);
         return "Employee <b>" + firstName + " " + lastName + "</b> has been successfully added.";
@@ -47,7 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private String employeeToKey(String firstName, String lastName) {
-        return String.format(keyTemplate, firstName, lastName);
+        return String.format(KEY_TEMPLATE, firstName, lastName);
     }
 
     private void doesEmployeeExist(Employee employee) {
