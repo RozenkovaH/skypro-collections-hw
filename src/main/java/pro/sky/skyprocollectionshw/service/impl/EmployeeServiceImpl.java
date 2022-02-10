@@ -10,10 +10,21 @@ import java.util.Map;
 import pro.sky.skyprocollectionshw.data.Employee;
 import pro.sky.skyprocollectionshw.exception.EmployeeAlreadyExistsException;
 import pro.sky.skyprocollectionshw.exception.EmployeeNotFoundException;
+import pro.sky.skyprocollectionshw.service.EmployeeFormatterService;
 import pro.sky.skyprocollectionshw.service.EmployeeService;
+import pro.sky.skyprocollectionshw.service.EmployeeValidationService;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+
+    private final EmployeeValidationService employeeValidationService;
+    private final EmployeeFormatterService employeeFormatterService;
+
+    public EmployeeServiceImpl(EmployeeValidationService employeeValidationService,
+                               EmployeeFormatterService employeeFormatterService) {
+        this.employeeValidationService = employeeValidationService;
+        this.employeeFormatterService = employeeFormatterService;
+    }
 
     private final static String KEY_TEMPLATE = "%s|%s";
     private final Map<String, Employee> employees = new HashMap<>();
@@ -25,9 +36,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public String addEmployee(String firstName, String lastName, int department, int salary) {
         Employee newEmployee = new Employee(firstName, lastName, department, salary);
+        employeeValidationService.validate(newEmployee);
+        newEmployee = employeeFormatterService.format(newEmployee);
         doesEmployeeExist(newEmployee);
         employees.put(employeeToKey(newEmployee), newEmployee);
-        return "Employee <b>" + firstName + " " + lastName + "</b> has been successfully added.";
+        return "Employee <b>" + newEmployee.getFirstName() + " " + newEmployee.getLastName() + "</b> has been successfully added.";
     }
 
     @Override
